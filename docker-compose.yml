@@ -1,0 +1,25 @@
+version: '2'
+services:
+  mysql:
+    image: mysql:latest
+    container_name: ghost-db
+    env_file:
+      - config.env
+    volumes:
+      - ./db:/var/lib/mysql
+    restart: always
+
+  ghost:
+    build: ghost/
+    container_name: ghost-blog
+    env_file:
+      - config.env
+    volumes:
+      - ./blog-content:/var/lib/ghost
+    ports:
+      - 2368:2368
+    depends_on:
+      - mysql
+    restart: always
+
+  
