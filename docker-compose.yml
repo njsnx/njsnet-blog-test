@@ -1,5 +1,25 @@
-version: '2'
+version: '2'  
 services:
+  proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /usr/share/nginx/html
+      - /etc/nginx/vhost.d
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  # ssl-companion:
+  #   image: jrcs/letsencrypt-nginx-proxy-companion
+  #   container_name: ssl-companion
+  #   volumes:
+  #     - /Users/Neil/Documents/Docker/njsnet-blog-2.0/ssl:/etc/nginx/certs:rw
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #   volumes_from:
+  #     - proxy
+  #   depends_on:
+  #     - proxy  
   mysql:
     image: mysql:latest
     container_name: ghost-db
@@ -8,18 +28,17 @@ services:
     volumes:
       - ./db:/var/lib/mysql
     restart: always
-
-  ghost:
-    build: ghost/
-    container_name: ghost-blog
-    env_file:
-      - config.env
+  blog:
+    restart: always
+    image: ghost
+    expose:
+      - 2368
     volumes:
-      - ./blog-content:/var/lib/ghost
-    ports:
-      - 2368:2368
+      - ./blog-content-2:/var/lib/ghost
     depends_on:
       - mysql
-    restart: always
-
-  
+    environment:
+      - VIRTUAL_HOST=blog.njsnet.co
+      - LETSENCRYPT_HOST=blog.njsnet.co
+      - LETSENCRYPT_EMAIL=nmyster@gmail.com
+ 

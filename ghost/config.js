@@ -2,7 +2,7 @@
 // Setup your Ghost install for various [environments](http://support.ghost.org/config/#about-environments).
 
 // Ghost runs in `development` mode by default. Full documentation can be found at http://support.ghost.org/config/
-
+// FROM GHOST BUILD
 var path = require('path'),
     config;
 
@@ -31,17 +31,20 @@ config = {
     development: {
         // The url to use when providing links to the site, E.g. in RSS and email.
         // Change this to your Ghost blog's published URL.
-        url: 'http://localhost:2368',
-
+        url: 'http://blog.njsnet.co:2368',
         // #### Database
         // Ghost supports sqlite3 (default), MySQL & PostgreSQL
         database: {
-            client: 'sqlite3',
+            client: 'mysql',
             connection: {
-                filename: path.join(process.env.GHOST_CONTENT, '/data/ghost.db')
+                host: 'mysql',
+                user: 'njsnet',
+                password: 'njsnet-blog-password',
+                database: 'blog',
+                charset: 'utf8'
             },
-            debug: false
-        },
+             debug: true
+         },
         // #### Server
         // Can be host & port (default), or socket
         server: {
